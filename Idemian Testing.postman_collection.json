@@ -1,0 +1,676 @@
+{
+	"info": {
+		"_postman_id": "37c42d11-97d5-4b5a-a71b-97cb6efc87b5",
+		"name": "Idemian Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8002291"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"item": [
+						{
+							"name": "Signup new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"exampleEmail\", pm.response.json().email);\r",
+											"\r",
+											"let jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"When signup with correct credentials response status is 201\", function () {\r",
+											"\tpm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"When signup response should be object with property createdAt\", () => {\r",
+											"\tpm.expect(jsonData).to.be.an(\"object\");\r",
+											"\tpm.expect(jsonData.createdAt).to.be.not.empty\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"name\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomFirstName}}@idemia.com\",\r\n  \"password\": \"{{$randomPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User signup with existing email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"let jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"When signup with existing email response code should be 409\", function () {\r",
+											"\tpm.response.to.have.status(409);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"When signup with existing email response should have proper error message\", () => {\r",
+											"\tpm.expect(jsonData).to.be.an(\"object\");\r",
+											"\tpm.expect(jsonData.error).to.eql(\"User with that email already exists\")\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"name\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{exampleEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"item": [
+						{
+							"name": "Admin login with correct credentials",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"authToken\", pm.response.json().token);\r",
+											"\r",
+											"let jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"When succesfully logged status code should be 200\", function () {\r",
+											"\tpm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"When succesfully logged response should contain token\", function () {\r",
+											"\tpm.expect(jsonData).to.have.all.keys(\"token\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\t\"email\": \"michal.dabkowski@idemia.com\",\r\n  \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login with bad credentials",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"When logging with bad credentials status code should be 401\", function () {\r",
+											"\tpm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"When succesfully logged response should contain token\", function () {\r",
+											"\tpm.expect(jsonData).to.have.all.keys([\"timestamp\", \"error\", \"status\"]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n\t\t\"email\": \"michal.dabkowski@google.com\",\r\n  \"password\": \"password\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Category managment with admin user",
+			"item": [
+				{
+					"name": "Create new category as admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"exampleId\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"When succesfully created should have status 201\", () => {\r",
+									"\tpm.response.to.have.status(201);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"When succesfully created should have corect keys\", () => {\r",
+									"\tpm.expect(jsonData).to.have.all.keys([\"name\", \"id\"]);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{$randomLoremWords}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"When trying to get correct category should have status 200\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"When succesfully created should have corect keys\", () => {\r",
+									"\tpm.expect(jsonData).to.have.all.keys([\"name\", \"id\"]);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"When changing category should have status 200\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"When changing category payload should be Testtest\", () => {\r",
+									"\tpm.expect(jsonData.name).to.eql(pm.environment.get(\"putMethodTestBody\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{putMethodTestBody}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"When deleting category should have status 200\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting error when trying to get incorrect category",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"wrongId\", pm.environment.get(\"exampleId\") + 1);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"When wrong id used shoudl have 404 response code\", () => {\r",
+									"\tpm.response.to.have.status(404);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{wrongId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{wrongId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{authToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Task managing with admin user",
+			"item": [
+				{
+					"name": "Create new task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"taskExampleId\", pm.response.json().id);\r",
+									"\r",
+									"pm.test(\"When succesfully created  task should have status 201\", () => {\r",
+									"\tpm.response.to.have.status(201);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"When succesfully created task should contains correct keys\", () => {\r",
+									"\tpm.expect(pm.response.json()).to.have.all.keys([\"id\", \"title\", \"description\", \"reward\", \"icon\", \"easterEgg\", \"timeStart\", \"timeEnd\", \"timeCreated\"]);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"title\": \"{{$randomLoremParagraph}}\",\r\n  \"description\": \"{{$randomLoremParagraph}}\",\r\n  \"reward\": 0,\r\n  \"icon\": \"string\",\r\n  \"easterEgg\": false,\r\n  \"timeStart\": \"2022-02-22T10:10:30\",\r\n  \"timeEnd\": \"2022-02-22T10:10:30\",\r\n  \"timeCreated\": \"2022-02-22T10:10:30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}/quests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}",
+								"quests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"When getting all quests status should be 200\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response object should have property which is array\", () => {\r",
+									"\tpm.expect(pm.response.json().quests).to.be.an(\"array\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}/quests",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}",
+								"quests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get single task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"When gettin single task  with correct id should have status 200\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"When gettin single task  with correct id should contains correct keys\", () => {\r",
+									"\tpm.expect(pm.response.json()).to.have.all.keys([\"id\", \"title\", \"description\", \"reward\", \"icon\", \"easterEgg\", \"timeStart\", \"timeEnd\", \"timeCreated\"]);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}/quests/{{taskExampleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}",
+								"quests",
+								"{{taskExampleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should have status 200 when deleted\", () => {\r",
+									"\tpm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Should have status 404 when wrong id used\", () => {\r",
+									"\tpm.response.to.have.status(404);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}/quests/{{taskExampleId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}",
+								"quests",
+								"{{taskExampleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting qr code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"When trying to get qr should have correct header and response status\", () =>{\r",
+									"\tpm.response.to.have.status(200);\r",
+									"\tpm.response.to.have.header(\"Content-type\", \"image/png\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{exampleId}}/quests/{{taskExampleId}}/qr",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"{{exampleId}}",
+								"quests",
+								"{{taskExampleId}}",
+								"qr"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{authToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
