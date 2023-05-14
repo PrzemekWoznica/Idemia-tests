@@ -1,0 +1,277 @@
+= Test plan
+
+*1. Introduction*
+
+We will testing Idemian app, which purpose is  help to onboarding processe. Application was created by Polit4echnika Łódzka with cooperation with Idemia. Objectives of this tests is, making sure that end product will be without any bugs.
+
+*2. Features to be tested*
+
+- Creating new user
+- Authorization with existing user
+- Admin mode users managment
+- User experience with tasks and categories
+- Creating new tasks and categories only by admin
+- Editing tasks and categories only by admin
+- Delete tasks and categories only by admin
+- Completion of tasks with QR code
+- Completion of task with keyboard
+- Logout
+- Easter eggs settings
+- Dark mode
+
+*3. Tests environment*
+
+- Company production servers
+- Company tests servers
+- Company development servers
+
+*4. Tests schedule*
+Tests will be performed when new pull request will be send to repository, tests managment would be set in Jenkins.
+Tests on local environment will be executed by tester after developer add new functionalities.
+Unit and integration tests would be exectued by developers.
+
+*5. Tests responsibilities*
+Test lead: responsible for tests design
+Developement team: responsible for unit and integration tests
+QA team: Features, performance and end-to-end tests
+
+*6. Tests approach*
+Manual test would have 90% code coverage and 100% will be passed.
+Performance tests assume 3 users per minute 80% of request will be validated as no tread for production app.
+
+
+*7. Testing tools*
+
+|===
+|Types of tests |Tools
+
+|Unit tests
+|Selenium framework for GUI, and Junit for api
+
+|Integration tests
+|Junit and MOckito
+
+|Feature tests
+|Postman
+
+|Performance tests
+|Gatling framework
+
+|e2e tests
+|SerenityBDD
+
+|Mobile app tests
+|Appium
+
+|Code acceptance tests
+|Sonar
+|===
+
+*8. Tests scenarios*
+
+|===
+|Scenario: User trying to signup
+
+|Given: User does not exist in database
+
+|When: User type in login and password then clicked signup button
+
+|Then: User will be signed and logged to home page
+
+|===
+
+|===
+|Scenario: User trying to login with password and password
+
+|Given: User already exists and has admin role, and enter correct login and password
+
+|When: User click login button
+
+|Then: User will be logged and see home page adjusted for admin managment
+
+|===
+
+|===
+|Scenario: User trying to login with email and password
+
+|Given: User already exists and it is regular user, and using correct passwords
+
+|When: User clicked login button
+
+|Then: User will be logged and see home page
+
+|===
+
+|===
+|Scenario: User trying to login
+
+|Given: User does not exist in database
+
+|When: User enter email and password and click button
+
+|Then: User will be asked to signup
+
+|===
+
+|===
+|Scenario: Admin trying to add new catoegory
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin type category name and click add button
+
+|Then: New category will be added
+
+|===
+
+|===
+|Scenario: Admin trying to add new catoegory
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin type wrong format of category name and click add button
+
+|Then: New category will not be added and proper error message will appear
+
+|===
+
+|===
+|Scenario: Admin trying to add new catoegory
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin type wrong format of category name and click add button
+
+|Then: New category will not be added and proper error message will appear
+
+|===
+
+|===
+|Scenario: Admin trying to delete category
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked delete button
+
+|Then: Category will be removed
+
+|===
+
+|===
+|Scenario: Admin trying to edit catoegory
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked edit button
+
+|Then: Admin can change category name
+
+|===
+
+|===
+|Scenario: Admin trying to add new task to category
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin type values in all fields and select all options
+
+|Then: New task will be added
+
+|===
+
+|===
+|Scenario: Admin trying to add new task to category
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin type  wrong values in fields
+
+|Then: Task will not be added and error message will prompt
+
+|===
+
+|===
+|Scenario: Admin trying to set task as completed
+
+|Given: Admin is correctly logged, have permissions and have QR to scan
+
+|When: Admin click scan button and scan correct QR
+
+|Then: Task will be removed to done quests section and will be marked as done
+
+|===
+
+|===
+|Scenario: Admin trying to set task as completed
+
+|Given: Admin is correctly logged, have permissions and have QR code to type
+
+|When: Admin click scan button and type in code
+
+|Then: Task will be removed to done questes section and will be marked as done
+
+|===
+
+|===
+|Scenario: Admin trying to delete task
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked delete task button
+
+|Then: Task will be removed
+
+|===
+
+|===
+|Scenario: Admin trying to edit task
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked on task, and typed new datas to task template
+
+|Then: Task is changed
+
+|===
+
+|===
+|Scenario: Admin trying to get QR code
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked on task, and then clicked on QR button
+
+|Then: QR code will be shown and user can download it or print
+
+|===
+
+|===
+|Scenario: Admin trying to see user profile and activate admin mode
+
+|Given: Admin is correctly logged and have permissions
+
+|When: Admin clicked on user profile, then activate admin mode
+
+|Then: Admin can add, edit and delete categories and tasks, activate dark mode, see user deatils and signout
+
+|===
+
+|===
+|Scenario: User trying to see user profile
+
+|Given: User is correctly logged
+
+|When: USER clicked on user profile
+
+|Then: User can activate dark mode, and could try signout
+
+|===
+
+
+
+*Exit criteria*
+
+- All defects would be fixed
+- All test cases would be tested and passed
+
+
